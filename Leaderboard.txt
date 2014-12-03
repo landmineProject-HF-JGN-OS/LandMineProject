@@ -1,1 +1,3 @@
-Jacob : 100 | Jacob : 50
+Jacob : 20
+Jacob : 30
+Jacob : 100
