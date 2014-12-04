@@ -4,8 +4,7 @@ import com.mrjaffesclass.apcs.messenger.*;
 import java.awt.GridLayout;
 import java.io.*;
 import java.lang.System;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
 import static java.lang.System.*;
 import javax.swing.*;
 
@@ -22,7 +21,13 @@ public class View extends javax.swing.JFrame implements MessageHandler {
     private final Messenger mvcMessaging;
     public String leaderboardText;
     public JToggleButton[] button = new JToggleButton[64];
-    public int highScore = Integer.parseInt(leaderboardText);
+    public boolean[] bombMap = new boolean[64];
+
+    /**
+     *
+     * @param messages
+     */
+    public 
     /**
      * Creates a new view
      *
@@ -41,6 +46,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             button[i] = new JToggleButton(String.valueOf(i));
             button[i].setName(String.valueOf(i));
             button[i].setSize(64, 64);
+            button[i].setBackground(new java.awt.Color((int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255)));
             jPanel1.add(button[i]);
             button[i].addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -49,18 +55,12 @@ public class View extends javax.swing.JFrame implements MessageHandler {
                 button[Integer.parseInt(evt.getActionCommand())].setEnabled(false);
                 out.println(evt.getActionCommand() + " Was clicked");
                 mvcMessaging.notify("veiw:buttonClicked", evt.getActionCommand(), rootPaneCheckingEnabled);
-                if(isBomb() == true)
+                if(bombMap[Integer.parseInt(evt.getActionCommand())] == true)
                 {
                     gameOver();
                 }
             }});
         }
-    }
-    
-    public boolean isBomb()
-    {
-        
-        return true;
     }
     
     public void gameOver()
@@ -134,6 +134,21 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             System.out.println("MSG: received by view: " + messageName + " | " + messagePayload.toString());
         } else {
             System.out.println("MSG: received by view: " + messageName + " | No data sent");
+        }
+        
+        if(messageName.equals("model:isBomb"))
+        {
+           for(int i = 0; i != bombMap.length; i++)
+           {
+                if(messagePayload.toString() == "true")
+                {
+                    bombMap[i] = true;
+                }
+                else
+                {
+                    bombMap[i] = false;
+                }
+           }
         }
     }
 

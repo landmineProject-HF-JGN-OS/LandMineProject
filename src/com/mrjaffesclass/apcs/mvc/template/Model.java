@@ -1,6 +1,7 @@
 package com.mrjaffesclass.apcs.mvc.template;
 
 import com.mrjaffesclass.apcs.messenger.*;
+import java.util.*;
 
 /**
  * The model represents the data that the app uses.
@@ -13,8 +14,7 @@ public class Model implements MessageHandler {
   private final Messenger mvcMessaging;
 
   // Model's data variables
-  private int variable1;
-  private int variable2;
+  private boolean bombMap[] = new boolean[64];
 
   /**
    * Model constructor: Create the data representation of the program
@@ -30,8 +30,7 @@ public class Model implements MessageHandler {
    */
   public void init() {
     mvcMessaging.subscribe("view:changeButton", this);
-    setVariable1(10);
-    setVariable2(-10);
+    setBombmap();
   }
   
   @Override
@@ -46,17 +45,10 @@ public class Model implements MessageHandler {
     int direction = payload.getDirection();
     
     if (direction == Constants.UP) {
-      if (field == 1) {
-        setVariable1(getVariable1()+Constants.FIELD_1_INCREMENT);
-      } else {
-        setVariable2(getVariable2()+Constants.FIELD_2_INCREMENT);
-      }
-    } else {
-      if (field == 1) {
-        setVariable1(getVariable1()-Constants.FIELD_1_INCREMENT);
-      } else {
-        setVariable2(getVariable2()-Constants.FIELD_2_INCREMENT);
-      }      
+      if (field == 1) 
+      {
+          setBombmap();
+      }   
     }
   }
 
@@ -64,40 +56,25 @@ public class Model implements MessageHandler {
    * Getter function for variable 1
    * @return Value of variable1
    */
-  public int getVariable1() {
-    return variable1;
+  public boolean[] getBombmap() {
+    return bombMap;
   }
 
   /**
    * Setter function for variable 1
    * @param v New value of variable1
    */
-  public void setVariable1(int v) {
-    variable1 = v;
+  public void setBombmap() {
+    
+    Random aa = new Random();
+    for(int i = 0; i != bombMap.length - 1; i++)
+    {
+        bombMap[i] = aa.nextBoolean();
+    
     // When we set a new value to variable 1 we need to also send a
     // message to let other modules know that the variable value
     // was changed
-    mvcMessaging.notify("model:variable1Changed", variable1, true);
+        mvcMessaging.notify("model:isBomb", bombMap[i], true);
+    }
   }
-  
-  /**
-   * Getter function for variable 1
-   * @return Value of variable2
-   */
-  public int getVariable2() {
-    return variable2;
-  }
-  
-  /**
-   * Setter function for variable 2
-   * @param v New value of variable 2
-   */
-  public void setVariable2(int v) {
-    variable2 = v;
-    // When we set a new value to variable 2 we need to also send a
-    // message to let other modules know that the variable value
-    // was changed
-    mvcMessaging.notify("model:variable2Changed", variable2, true);
-  }
-
 }
