@@ -67,14 +67,14 @@ public class Model implements MessageHandler {
   public void setBombmap() {
     
     Random aa = new Random();
-    for(int i = 0; i != bombMap.length - 1; i++)
+    for(int i = 0; i != bombMap.length; i++)
     {
         bombMap[i] = aa.nextBoolean();
     
     // When we set a new value to variable 1 we need to also send a
     // message to let other modules know that the variable value
     // was changed
-        mvcMessaging.notify("model:isBomb", bombMap[i], true);
+        mvcMessaging.notify("model:isBomb", bombMap, true);
     }
   }
 }

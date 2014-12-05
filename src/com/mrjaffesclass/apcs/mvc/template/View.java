@@ -27,7 +27,6 @@ public class View extends javax.swing.JFrame implements MessageHandler {
      *
      * @param messages
      */
-    public 
     /**
      * Creates a new view
      *
@@ -46,35 +45,32 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             button[i] = new JToggleButton(String.valueOf(i));
             button[i].setName(String.valueOf(i));
             button[i].setSize(64, 64);
-            button[i].setBackground(new java.awt.Color((int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255)));
+            button[i].setBackground(new java.awt.Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)));
             jPanel1.add(button[i]);
             button[i].addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                button[Integer.parseInt(evt.getActionCommand())].setEnabled(false);
-                out.println(evt.getActionCommand() + " Was clicked");
-                mvcMessaging.notify("veiw:buttonClicked", evt.getActionCommand(), rootPaneCheckingEnabled);
-                if(bombMap[Integer.parseInt(evt.getActionCommand())] == true)
-                {
-                    gameOver();
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    button[Integer.parseInt(evt.getActionCommand())].setEnabled(false);
+                    out.println(evt.getActionCommand() + " Was clicked");
+                    out.println(bombMap[Integer.parseInt(evt.getActionCommand())]);
+                    mvcMessaging.notify("veiw:buttonClicked", evt.getActionCommand(), rootPaneCheckingEnabled);
+                    if (bombMap[Integer.parseInt(evt.getActionCommand())] == true) {
+                        gameOver();
+                    }
                 }
-            }});
+            });
         }
     }
-    
-    public void gameOver()
-    {
-        for (int i = 0; i < 64; i++)
-        {
+
+    public void gameOver() {
+        for (int i = 0; i < 64; i++) {
             button[i].setEnabled(false);
             dialogBoxInit();
             jDialog1.setVisible(true);
         }
     }
-    
-    public void dialogBoxInit()
-    {
+
+    public void dialogBoxInit() {
         JButton reset = new JButton("Do You Want To Retry?");
         reset.setName("reset");
         reset.setSize(200, 50);
@@ -99,21 +95,17 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             out.println("File Not found " + leaderboardText);
         }
     }
-    
-    public void leaderBoardWrite(String message)
-    {
-        try 
-        {
+
+    public void leaderBoardWrite(String message) {
+        try {
             FileWriter leaderboard = new FileWriter("../src/../Leaderboard.txt", true);
             BufferedWriter bWriter = new BufferedWriter(leaderboard);
-            
+
             bWriter.newLine();
             bWriter.write(" " + message, WIDTH, message.length());
-            
+
             bWriter.close();
-        } 
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             out.println("File Not found " + leaderboardText);
         }
     }
@@ -135,20 +127,15 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         } else {
             System.out.println("MSG: received by view: " + messageName + " | No data sent");
         }
-        
-        if(messageName.equals("model:isBomb"))
-        {
-           for(int i = 0; i != bombMap.length; i++)
-           {
-                if(messagePayload.toString() == "true")
-                {
-                    bombMap[i] = true;
-                }
-                else
-                {
-                    bombMap[i] = false;
-                }
-           }
+
+        if (messageName.equals("model:isBomb")) {
+            bombMap = (boolean[])messagePayload;
+//            if ((boolean)messagePayload) {
+//                bombMap[i] = true;
+//            } else {
+//                bombMap[i] = false;
+//            }
+
         }
     }
 
