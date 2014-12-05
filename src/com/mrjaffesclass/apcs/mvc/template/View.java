@@ -6,6 +6,7 @@ import java.io.*;
 import java.lang.System;
 import java.util.*;
 import static java.lang.System.*;
+import javafx.scene.paint.Color;
 import javax.swing.*;
 
 /**
@@ -22,6 +23,11 @@ public class View extends javax.swing.JFrame implements MessageHandler {
     public String leaderboardText;
     public JToggleButton[] button = new JToggleButton[64];
     public boolean[] bombMap = new boolean[64];
+    public Random random = new Random();
+    public int lives = Constants.lives;
+    public int score = 0;
+    public int highScore = 20;
+    public String Name;
 
     /**
      *
@@ -37,6 +43,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         initComponents(); // Create and init the GUI components
         buttonInit();
         leaderboardLoad();
+        livesUpdate(0);
     }
 
     public void buttonInit() {
@@ -44,8 +51,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         for (int i = 0; i < 64; i++) {
             button[i] = new JToggleButton(String.valueOf(i));
             button[i].setName(String.valueOf(i));
-            button[i].setSize(64, 64);
-            button[i].setBackground(new java.awt.Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)));
+            //button[i].setBackground(new java.awt.Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)));
             jPanel1.add(button[i]);
             button[i].addActionListener(new java.awt.event.ActionListener() {
                 @Override
@@ -53,20 +59,50 @@ public class View extends javax.swing.JFrame implements MessageHandler {
                     button[Integer.parseInt(evt.getActionCommand())].setEnabled(false);
                     out.println(evt.getActionCommand() + " Was clicked");
                     out.println(bombMap[Integer.parseInt(evt.getActionCommand())]);
-                    mvcMessaging.notify("veiw:buttonClicked", evt.getActionCommand(), rootPaneCheckingEnabled);
                     if (bombMap[Integer.parseInt(evt.getActionCommand())] == true) {
-                        gameOver();
+                        button[Integer.parseInt(evt.getActionCommand())].setBackground(new java.awt.Color(0, 0, 0));
+                        livesUpdate(1);
+                    } else {
+                        button[Integer.parseInt(evt.getActionCommand())].setBackground(new java.awt.Color(0, 0, 0));
+                        scoreUpdates(1);
                     }
                 }
             });
         }
     }
 
-    public void gameOver() {
-        for (int i = 0; i < 64; i++) {
-            button[i].setEnabled(false);
-            dialogBoxInit();
-            jDialog1.setVisible(true);
+    public void livesUpdate(int damage) {
+        lives -= damage;
+
+        jLabel1.setText("Lives: " + lives);
+
+        if (lives <= 0 && score >= highScore) {
+            gameOver(true);
+        }
+        else
+        {
+            gameOver(false);
+        }
+    }
+
+    public void scoreUpdates(int scoreToAdd) {
+        score += scoreToAdd;
+        jProgressBar1.setMaximum(highScore);
+        jProgressBar1.setValue(score);
+        
+        if (score >= highScore) {
+            leaderBoardWrite(Name + " : " + score);
+        }
+    }
+
+    public void gameOver(boolean win) {
+
+        if (win) {
+            for (int i = 0; i < 64; i++) {
+                button[i].setEnabled(false);
+                dialogBoxInit();
+                jDialog1.setVisible(true);
+            }
         }
     }
 
@@ -74,8 +110,6 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         JButton reset = new JButton("Do You Want To Retry?");
         reset.setName("reset");
         reset.setSize(200, 50);
-        reset.setAlignmentX(0.5f);
-        reset.setAlignmentY(0.5f);
         jDialog1.setSize(300, 200);
         jDialog1.setResizable(false);
         jDialog1.add(reset);
@@ -129,13 +163,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         }
 
         if (messageName.equals("model:isBomb")) {
-            bombMap = (boolean[])messagePayload;
-//            if ((boolean)messagePayload) {
-//                bombMap[i] = true;
-//            } else {
-//                bombMap[i] = false;
-//            }
-
+            bombMap = (boolean[]) messagePayload;
         }
     }
 
@@ -165,6 +193,9 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         jScrollPane1 = new javax.swing.JScrollPane();
         Leaderboard = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
+        jProgressBar1 = new javax.swing.JProgressBar();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -194,31 +225,57 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 441, Short.MAX_VALUE)
+            .addGap(0, 472, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 399, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
+
+        jProgressBar1.setMaximum(highScore);
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel1.setText("Lives: ");
+        jLabel1.setFocusable(false);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel2.setText("Score: ");
+        jLabel2.setFocusable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -234,7 +291,10 @@ public class View extends javax.swing.JFrame implements MessageHandler {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea Leaderboard;
     private javax.swing.JDialog jDialog1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

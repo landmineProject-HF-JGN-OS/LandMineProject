@@ -67,9 +67,9 @@ public class Model implements MessageHandler {
   public void setBombmap() {
     
     Random aa = new Random();
-    for(int i = 0; i != bombMap.length; i++)
+    for(int i = 0; i < 10; i++)
     {
-        bombMap[i] = aa.nextBoolean();
+        bombMap[aa.nextInt(64)] = true;
     
     // When we set a new value to variable 1 we need to also send a
     // message to let other modules know that the variable value

@@ -15,6 +15,7 @@ public class Constants {
   public static final int UP = 1;
   public static final int DOWN = -1;
   public static final int[] BOMBMAP = new int[64];
+  public static final int lives = 3;
   
   public static final int FIELD_1_INCREMENT = 1;
   public static final int FIELD_2_INCREMENT = 1;
