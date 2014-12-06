@@ -44,11 +44,12 @@ public class Model implements MessageHandler {
     int field = payload.getField();
     int direction = payload.getDirection();
     
-    if (direction == Constants.UP) {
-      if (field == 1) 
-      {
-          setBombmap();
-      }   
+     if (messageName.equals("model:isBomb"))
+     {
+        if ((boolean)messagePayload == true) 
+        {
+            setBombmap();
+        }   
     }
   }
 
