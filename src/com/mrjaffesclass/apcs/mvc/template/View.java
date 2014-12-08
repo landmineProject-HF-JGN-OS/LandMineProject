@@ -91,6 +91,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         jProgressBar1.setMaximum(highScore);
         jProgressBar1.setValue(score);
         jLabel2.setText("Score : " + score);
+        jLabel6.setText("HighScore : " + highScore);
     }
 
     public void gameOver(boolean win) {
@@ -116,6 +117,8 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             FileReader leaderboard = new FileReader("../Leaderboard.txt");
             BufferedReader bReader = new BufferedReader(leaderboard);
             Scanner scan = new Scanner(leaderboardText);
+            
+            //highScore = scan.nextInt();
             
             if (overWrite) {
                 Leaderboard.setText(" ");
@@ -381,6 +384,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         Name = jTextField1.getText();
         if (score >= highScore) {
             leaderBoardWrite(Integer.toString(score));
+            highScore = score;
         }
         scoreUpdates(-score);
         livesUpdate(-Constants.lives);
