@@ -6,7 +6,6 @@ import java.io.*;
 import java.lang.System;
 import java.util.*;
 import static java.lang.System.*;
-import javafx.scene.paint.Color;
 import javax.swing.*;
 
 /**
@@ -46,7 +45,8 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         livesUpdate(0);
         jLabel6.setText("HighScore : " + highScore);
     }
-
+//This initiates the button in an 8 by 8 layout and sets the action listener for them.
+   
     public void buttonInit() {
         jPanel1.setLayout(new GridLayout(8, 8));
         for (int i = 0; i < 64; i++) {
@@ -57,6 +57,9 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             jPanel1.add(button[i]);
             button[i].addActionListener(new java.awt.event.ActionListener() {
                 @Override
+                //This sends out the message and checks it with a 
+                //and checks it if it matches with the button boolean array
+               
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     button[Integer.parseInt(evt.getActionCommand())].setEnabled(false);
                     out.println(evt.getActionCommand() + " Was clicked");
@@ -73,7 +76,8 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             });
         }
     }
-
+//This changes the lives value and checks if you should game over.
+   
     public void livesUpdate(int damage) {
         lives -= damage;
 
@@ -85,7 +89,8 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             gameOver(false);
         }
     }
-
+//updates the score and the jlabels the progress bar.
+    
     public void scoreUpdates(int scoreToAdd) {
         score += scoreToAdd;
         jProgressBar1.setMaximum(highScore);
@@ -93,7 +98,8 @@ public class View extends javax.swing.JFrame implements MessageHandler {
         jLabel2.setText("Score : " + score);
         jLabel6.setText("HighScore : " + highScore);
     }
-
+//ends the game and sends out a dialog box.
+  
     public void gameOver(boolean win) {
 
         for (int i = 0; i < 64; i++) {
@@ -102,7 +108,8 @@ public class View extends javax.swing.JFrame implements MessageHandler {
 
         }
     }
-
+//makes a dialog box that shows the score & the high score
+  
     public void dialogBoxInit() {
         jFrame1.setSize(450, 300);
         jFrame1.setResizable(false);
@@ -111,7 +118,8 @@ public class View extends javax.swing.JFrame implements MessageHandler {
 
         jFrame1.setVisible(true);
     }
-
+//Loads the leaderboard from a text file.
+ 
     public void leaderboardLoad(boolean overWrite) {
         try {
             FileReader leaderboard = new FileReader("../Leaderboard.txt");
@@ -135,7 +143,8 @@ public class View extends javax.swing.JFrame implements MessageHandler {
             out.println("File Not found " + leaderboardText);
         }
     }
-
+//Writes the leaderboard to the text file
+ 
     public void leaderBoardWrite(String message) {
         try {
             FileWriter leaderboard = new FileWriter("../src/../Leaderboard.txt", true);
@@ -379,7 +388,7 @@ public class View extends javax.swing.JFrame implements MessageHandler {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
 
     }//GEN-LAST:event_jTextField1ActionPerformed
-
+//Resets the game if pressed.
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Name = jTextField1.getText();
         if (score >= highScore) {
