@@ -34,6 +34,7 @@ public class Model implements MessageHandler {
   }
   
   @Override
+  //Checks if the message "is bomb" is recieved.
   public void messageHandler(String messageName, Object messagePayload) {
     if (messagePayload != null) {
       System.out.println("MSG: received by model: "+messageName+" | "+messagePayload.toString());
@@ -61,9 +62,9 @@ public class Model implements MessageHandler {
     return bombMap;
   }
 
-  /**
-   * Setter function for variable 1
-   * @param v New value of variable1
+   /**
+   * Setter function for Bombmap
+   * @param aa New value of Bombmap
    */
   public void setBombmap() {
     
